@@ -3,10 +3,10 @@
   "use strict";
   const L = (document.documentElement.lang || "en").slice(0, 2);
   const T = {
-    en: { invoice: "Invoice", credit: "Credit note", number: "Number", date: "Date", due: "Due", from: "From", to: "To", items: "Items", totals: "Totals", net: "Net", vat: "VAT", total: "Total", pay: "To pay", payment: "Payment", signed: "Digitally signed file", by: "Signed by", on: "on", notInvoice: "This XML is not an invoice format Lisible knows. Its content:", notRead: "This file could not be read. Is it a .p7m, .xml or Factur-X .pdf?", inner: "Download the document inside", pdfNote: "This PDF is shown below. Factur-X/ZUGFeRD data inside PDFs is read by the Lisible app.", withholding: "Withholding tax", paid: "Already paid", lines: "Items total", discount: "Discount", charge: "Charge" },
-    fr: { invoice: "Facture", credit: "Avoir", number: "Numéro", date: "Date", due: "Échéance", from: "Émetteur", to: "Destinataire", items: "Lignes", totals: "Totaux", net: "HT", vat: "TVA", total: "TTC", pay: "À payer", payment: "Paiement", signed: "Fichier signé numériquement", by: "Signé par", on: "le", notInvoice: "Ce XML n'est pas un format de facture connu de Lisible. Son contenu :", notRead: "Ce fichier n'a pas pu être lu. Est-ce un .p7m, un .xml ou un PDF Factur-X ?", inner: "Télécharger le document contenu", pdfNote: "Le PDF est affiché ci-dessous. Les données Factur-X d'un PDF sont lues par l'app Lisible.", withholding: "Retenue à la source", paid: "Déjà payé", lines: "Lignes", discount: "Remise", charge: "Frais" },
-    de: { invoice: "Rechnung", credit: "Gutschrift", number: "Nummer", date: "Datum", due: "Fällig", from: "Von", to: "An", items: "Positionen", totals: "Summen", net: "Netto", vat: "USt.", total: "Brutto", pay: "Zu zahlen", payment: "Zahlung", signed: "Digital signierte Datei", by: "Signiert von", on: "am", notInvoice: "Diese XML-Datei ist kein Rechnungsformat, das Lisible kennt. Inhalt:", notRead: "Diese Datei konnte nicht gelesen werden. Ist es eine .p7m-, .xml- oder ZUGFeRD-PDF-Datei?", inner: "Enthaltenes Dokument herunterladen", pdfNote: "Das PDF wird unten angezeigt. ZUGFeRD-Daten in PDFs liest die Lisible-App.", withholding: "Quellensteuer", paid: "Bereits bezahlt", lines: "Positionen", discount: "Rabatt", charge: "Zuschlag" },
-    it: { invoice: "Fattura", credit: "Nota di credito", number: "Numero", date: "Data", due: "Scadenza", from: "Cedente", to: "Cessionario", items: "Righe", totals: "Totali", net: "Imponibile", vat: "IVA", total: "Totale", pay: "Da pagare", payment: "Pagamento", signed: "File firmato digitalmente", by: "Firmato da", on: "il", notInvoice: "Questo XML non è un formato di fattura noto a Lisible. Contenuto:", notRead: "Impossibile leggere questo file. È un .p7m, un .xml o un PDF?", inner: "Scarica il documento contenuto", pdfNote: "Il PDF è mostrato qui sotto.", withholding: "Ritenuta d'acconto", paid: "Già pagato", lines: "Righe", discount: "Sconto", charge: "Maggiorazione" },
+    en: { invoice: "Invoice", credit: "Credit note", number: "Number", date: "Date", due: "Due", from: "From", to: "To", items: "Items", totals: "Totals", net: "Net", vat: "VAT", total: "Total", pay: "To pay", payment: "Payment", signed: "Digitally signed file", by: "Signed by", on: "on", notInvoice: "This XML is not an invoice format Lisible knows. Its content:", notRead: "This file could not be read. Is it a .p7m, .xml or Factur-X .pdf?", inner: "Download the document inside", pdfNote: "This PDF is shown below. Factur-X/ZUGFeRD data inside PDFs is read by the Lisible app.", withholding: "Withholding tax", paid: "Already paid", lines: "Items total", discount: "Discount", charge: "Charge", attachments: "Attachments", noAttachments: "No attachment in this file.", openHere: "open here" },
+    fr: { invoice: "Facture", credit: "Avoir", number: "Numéro", date: "Date", due: "Échéance", from: "Émetteur", to: "Destinataire", items: "Lignes", totals: "Totaux", net: "HT", vat: "TVA", total: "TTC", pay: "À payer", payment: "Paiement", signed: "Fichier signé numériquement", by: "Signé par", on: "le", notInvoice: "Ce XML n'est pas un format de facture connu de Lisible. Son contenu :", notRead: "Ce fichier n'a pas pu être lu. Est-ce un .p7m, un .xml ou un PDF Factur-X ?", inner: "Télécharger le document contenu", pdfNote: "Le PDF est affiché ci-dessous. Les données Factur-X d'un PDF sont lues par l'app Lisible.", withholding: "Retenue à la source", paid: "Déjà payé", lines: "Lignes", discount: "Remise", charge: "Frais", attachments: "Pièces jointes", noAttachments: "Aucune pièce jointe dans ce fichier.", openHere: "ouvrir ici" },
+    de: { invoice: "Rechnung", credit: "Gutschrift", number: "Nummer", date: "Datum", due: "Fällig", from: "Von", to: "An", items: "Positionen", totals: "Summen", net: "Netto", vat: "USt.", total: "Brutto", pay: "Zu zahlen", payment: "Zahlung", signed: "Digital signierte Datei", by: "Signiert von", on: "am", notInvoice: "Diese XML-Datei ist kein Rechnungsformat, das Lisible kennt. Inhalt:", notRead: "Diese Datei konnte nicht gelesen werden. Ist es eine .p7m-, .xml- oder ZUGFeRD-PDF-Datei?", inner: "Enthaltenes Dokument herunterladen", pdfNote: "Das PDF wird unten angezeigt. ZUGFeRD-Daten in PDFs liest die Lisible-App.", withholding: "Quellensteuer", paid: "Bereits bezahlt", lines: "Positionen", discount: "Rabatt", charge: "Zuschlag", attachments: "Anhänge", noAttachments: "Keine Anhänge in dieser Datei.", openHere: "hier öffnen" },
+    it: { invoice: "Fattura", credit: "Nota di credito", number: "Numero", date: "Data", due: "Scadenza", from: "Cedente", to: "Cessionario", items: "Righe", totals: "Totali", net: "Imponibile", vat: "IVA", total: "Totale", pay: "Da pagare", payment: "Pagamento", signed: "File firmato digitalmente", by: "Firmato da", on: "il", notInvoice: "Questo XML non è un formato di fattura noto a Lisible. Contenuto:", notRead: "Impossibile leggere questo file. È un .p7m, un .xml o un PDF?", inner: "Scarica il documento contenuto", pdfNote: "Il PDF è mostrato qui sotto.", withholding: "Ritenuta d'acconto", paid: "Già pagato", lines: "Righe", discount: "Sconto", charge: "Maggiorazione", attachments: "Allegati", noAttachments: "Nessun allegato in questo file.", openHere: "apri qui" },
   }[L] || {};
   const LOCALE = { en: "en-GB", fr: "fr-FR", de: "de-DE", it: "it-IT" }[L] || "en-GB";
 
@@ -251,6 +251,75 @@
     return i;
   }
 
+
+  // ---------- winmail.dat (TNEF) ----------
+  const u16 = (b, p) => b[p] | (b[p + 1] << 8);
+  const u32 = (b, p) => (b[p] | (b[p + 1] << 8) | (b[p + 2] << 16) | (b[p + 3] << 24)) >>> 0;
+  function decode(bytes, cp) {
+    const label = { 1252: "windows-1252", 1250: "windows-1250", 1251: "windows-1251", 65001: "utf-8", 28591: "iso-8859-1", 932: "shift_jis", 936: "gbk" }[cp] || "windows-1252";
+    let t; try { t = new TextDecoder(label).decode(bytes); } catch (e) { t = new TextDecoder().decode(bytes); }
+    return t.replace(/\0+$/, "");
+  }
+  const utf16 = (bytes) => new TextDecoder("utf-16le").decode(bytes).replace(/\0+$/, "");
+  function mapi(b) {
+    const out = {}; if (b.length < 4) return out;
+    const count = u32(b, 0); let p = 4; const pad = (n) => (n + 3) & ~3;
+    for (let k = 0; k < Math.min(count, 10000); k++) {
+      if (p + 4 > b.length) break;
+      const type = u16(b, p), id = u16(b, p + 2); p += 4;
+      if (id >= 0x8000) { if (p + 20 > b.length) break; const kind = u32(b, p + 16); p += 20; if (kind === 0) p += 4; else { const l = u32(b, p); p += 4 + pad(l); } }
+      const base = type & 0x0fff, multi = (type & 0x1000) !== 0, variable = [0x1e, 0x1f, 0x102, 0x0d].includes(base);
+      const fixed = [2, 3, 4, 0x0a, 0x0b].includes(base) ? 4 : [5, 6, 7, 0x14, 0x40].includes(base) ? 8 : base === 0x48 ? 16 : 0;
+      const items = [];
+      if (variable || multi) {
+        if (p + 4 > b.length) break; const n = u32(b, p); p += 4;
+        for (let j = 0; j < Math.min(n, 10000); j++) {
+          if (variable) { if (p + 4 > b.length) break; const l = u32(b, p); p += 4; if (p + l > b.length) { p = b.length; break; } let it = b.subarray(p, p + l); if (base === 0x0d && it.length >= 16) it = it.subarray(16); items.push(it); p += pad(l); }
+          else { if (!fixed || p + fixed > b.length) break; items.push(b.subarray(p, p + fixed)); p += pad(fixed); }
+        }
+      } else { if (!fixed || p + fixed > b.length) break; items.push(b.subarray(p, p + fixed)); p += pad(fixed); }
+      out[id] = { type, data: items };
+    }
+    return out;
+  }
+  const mstr = (props, id, cp) => { const v = props[id]; if (!v || !v.data[0]) return null; const b = v.type & 0x0fff; const t = b === 0x1f ? utf16(v.data[0]) : b === 0x1e ? decode(v.data[0], cp) : null; return t || null; };
+  const mbin = (props, id) => { const v = props[id]; return v && [0x102, 0x0d].includes(v.type & 0x0fff) ? v.data[0] : null; };
+  function openTNEF(b) {
+    if (b.length < 6 || u32(b, 0) !== 0x223e9f78) return null;
+    const msg = { subject: null, from: null, to: null, text: null, html: null, attachments: [] };
+    let cur = null, cp = null, p = 6;
+    const flush = () => { if (cur && cur.data && cur.data.length) msg.attachments.push(cur); cur = null; };
+    while (p + 9 <= b.length) {
+      const level = b[p], attr = u32(b, p + 1), len = u32(b, p + 5), start = p + 9;
+      if (start + len > b.length) break;
+      const v = b.subarray(start, start + len); p = start + len + 2; const id = attr & 0xffff;
+      if (id === 0x9002) { flush(); cur = { name: "attachment", data: null }; }
+      else if (level === 2 && id === 0x8010) { cur = cur || { name: "attachment", data: null }; cur.name = decode(v, cp); }
+      else if (level === 2 && id === 0x800f) { cur = cur || { name: "attachment", data: null }; cur.data = v; }
+      else if (level === 2 && id === 0x9005) { const pr = mapi(v); const long = mstr(pr, 0x3707, cp); if (long && cur) cur.name = long; if (cur && !(cur.data && cur.data.length)) { const c = mbin(pr, 0x3701); if (c) cur.data = c; } }
+      else if (level === 1 && id === 0x9007) cp = u32(v, 0);
+      else if (level === 1 && id === 0x8004) msg.subject = decode(v, cp);
+      else if (level === 1 && id === 0x800c) msg.text = decode(v, cp);
+      else if (level === 1 && id === 0x9003) {
+        const pr = mapi(v);
+        msg.subject = mstr(pr, 0x0037, cp) || msg.subject;
+        const name = mstr(pr, 0x0c1a, cp) || mstr(pr, 0x0042, cp); if (name) { const a = mstr(pr, 0x5d01, cp); msg.from = a && a !== name ? name + " <" + a + ">" : name; }
+        msg.to = mstr(pr, 0x0e04, cp) || msg.to;
+        msg.text = mstr(pr, 0x1000, cp) || msg.text;
+        const h = mbin(pr, 0x1013); if (h) msg.html = decode(h, cp); else msg.html = mstr(pr, 0x1013, cp) || msg.html;
+      }
+    }
+    flush();
+    return msg;
+  }
+  function renderEmail(m) {
+    const atts = m.attachments.map((a, k) => `<li><a download="${esc(a.name)}" href="${URL.createObjectURL(new Blob([a.data]))}">${esc(a.name)}</a> <span class="lv-small">${Math.max(1, Math.round(a.data.length / 1024))} KB</span>${/\.(xml|p7m|p7s)$/i.test(a.name) ? ` · <a href="#" data-att="${k}">${esc(T.openHere)}</a>` : ""}</li>`).join("");
+    const body = m.text ? `<div class="lv-body">${esc(m.text).replace(/\n/g, "<br>")}</div>` : m.html ? `<div class="lv-body">${esc(m.html.replace(/<style[\s\S]*?<\/style>/gi, "").replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))).replace(/&amp;/g, "&").replace(/\u200b/g, "").trim()).replace(/\n/g, "<br>")}</div>` : "";
+    return `<div class="lv-invoice"><div class="lv-head"><h2>${esc(m.subject || "winmail.dat")}</h2><span class="lv-small">Outlook winmail.dat</span></div>
+      <table class="lv-meta">${m.from ? `<tr><td>${esc(T.from)}</td><td>${esc(m.from)}</td></tr>` : ""}${m.to ? `<tr><td>${esc(T.to)}</td><td>${esc(m.to)}</td></tr>` : ""}</table>
+      <h3>${esc(T.attachments)} (${m.attachments.length})</h3>${atts ? `<ul>${atts}</ul>` : `<p>${esc(T.noAttachments)}</p>`}${body}</div>`;
+  }
+
   // ---------- Rendering ----------
   const esc = (v) => String(v == null ? "" : v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const money = (v, cur) => (v == null ? "—" : new Intl.NumberFormat(LOCALE, { style: "currency", currency: /^[A-Z]{3}$/.test(cur) ? cur : "EUR" }).format(v));
@@ -309,6 +378,15 @@
         html += `<div class="lv-signed"><strong>${esc(T.signed)}</strong>${signature.signers.length ? `<div>${esc(T.by)} ${esc(signature.signers.join(", "))}${signature.time ? " " + esc(T.on) + " " + signature.time.toLocaleString(LOCALE) : ""}</div>` : ""}</div>`;
         const url = URL.createObjectURL(new Blob([content]));
         html += `<p><a download="${esc(name)}" href="${url}">${esc(T.inner)} (${esc(name)})</a></p>`;
+      }
+      const mail = !signature && openTNEF(content);
+      if (mail) {
+        show(renderEmail(mail));
+        document.querySelectorAll("[data-att]").forEach((a) => a.addEventListener("click", (ev) => {
+          ev.preventDefault(); const att = mail.attachments[Number(a.getAttribute("data-att"))];
+          handle(new File([att.data], att.name));
+        }));
+        return;
       }
       const head = new TextDecoder().decode(content.subarray(0, 1024));
       if (head.includes("%PDF")) {
