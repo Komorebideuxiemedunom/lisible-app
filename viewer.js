@@ -315,9 +315,83 @@
   function renderEmail(m) {
     const atts = m.attachments.map((a, k) => `<li><a download="${esc(a.name)}" href="${URL.createObjectURL(new Blob([a.data]))}">${esc(a.name)}</a> <span class="lv-small">${Math.max(1, Math.round(a.data.length / 1024))} KB</span>${/\.(xml|p7m|p7s)$/i.test(a.name) ? ` · <a href="#" data-att="${k}">${esc(T.openHere)}</a>` : ""}</li>`).join("");
     const body = m.text ? `<div class="lv-body">${esc(m.text).replace(/\n/g, "<br>")}</div>` : m.html ? `<div class="lv-body">${esc(m.html.replace(/<style[\s\S]*?<\/style>/gi, "").replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))).replace(/&amp;/g, "&").replace(/\u200b/g, "").trim()).replace(/\n/g, "<br>")}</div>` : "";
-    return `<div class="lv-invoice"><div class="lv-head"><h2>${esc(m.subject || "winmail.dat")}</h2><span class="lv-small">Outlook winmail.dat</span></div>
+    return `<div class="lv-invoice"><div class="lv-head"><h2>${esc(m.subject || "winmail.dat")}</h2><span class="lv-small">${esc(m.format || "Outlook winmail.dat")}</span></div>
       <table class="lv-meta">${m.from ? `<tr><td>${esc(T.from)}</td><td>${esc(m.from)}</td></tr>` : ""}${m.to ? `<tr><td>${esc(T.to)}</td><td>${esc(m.to)}</td></tr>` : ""}</table>
       <h3>${esc(T.attachments)} (${m.attachments.length})</h3>${atts ? `<ul>${atts}</ul>` : `<p>${esc(T.noAttachments)}</p>`}${body}</div>`;
+  }
+
+
+  // ---------- Outlook .msg (Compound File Binary + MAPI properties) ----------
+  function openCFB(b) {
+    const sig = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
+    if (b.length < 512 || sig.some((v, i) => b[i] !== v)) return null;
+    const shift = u16(b, 0x1e); if (shift < 9 || shift > 12 || u16(b, 0x20) !== 6) return null;
+    const ss = 1 << shift, mss = 64, cutoff = u32(b, 0x38);
+    const off = (sec) => (sec + 1) * ss;
+    const fatSecs = [];
+    for (let i = 0; i < 109; i++) { const x = u32(b, 0x4c + i * 4); if (x < 0xfffffffa) fatSecs.push(x); }
+    let difat = u32(b, 0x44), g = 0;
+    while (difat < 0xfffffffa && g++ < 10000) { const base = off(difat), per = ss / 4 - 1; for (let i = 0; i < per; i++) { const x = u32(b, base + i * 4); if (x < 0xfffffffa) fatSecs.push(x); } difat = u32(b, base + per * 4); }
+    const fat = [];
+    for (const sec of fatSecs) { const base = off(sec); if (base + ss > b.length) return null; for (let i = 0; i < ss / 4; i++) fat.push(u32(b, base + i * 4)); }
+    const chain = (start, table, size, base, src) => {
+      const parts = []; let sec = start, n = 0;
+      while (sec !== 0xfffffffe && sec < 0xfffffffa && n++ < 1000000) { const st = base(sec); if (st < 0 || st + size > src.length) break; parts.push(src.subarray(st, st + size)); if (sec >= table.length) break; sec = table[sec]; }
+      const out = new Uint8Array(parts.reduce((a, x) => a + x.length, 0)); let o = 0; parts.forEach((x) => { out.set(x, o); o += x.length; }); return out;
+    };
+    const dir = chain(u32(b, 0x30), fat, ss, off, b);
+    const entries = [];
+    for (let p = 0; p + 128 <= dir.length; p += 128) {
+      const nl = Math.max(0, Math.min(64, u16(dir, p + 64)) - 2);
+      entries.push({ name: new TextDecoder("utf-16le").decode(dir.subarray(p, p + nl)), type: dir[p + 66], left: u32(dir, p + 68), right: u32(dir, p + 72), child: u32(dir, p + 76), start: u32(dir, p + 116), size: u32(dir, p + 120) });
+    }
+    if (!entries[0] || entries[0].type !== 5) return null;
+    const words = (x) => { const r = []; for (let i = 0; i + 3 < x.length; i += 4) r.push(u32(x, i)); return r; };
+    const miniFat = words(chain(u32(b, 0x3c), fat, ss, off, b));
+    const mini = chain(entries[0].start, fat, ss, off, b).subarray(0, entries[0].size);
+    return {
+      root: entries[0],
+      children(st) { const out = [], stack = [st.child], seen = new Set(); while (stack.length) { const id = stack.pop(); if (id === 0xffffffff || id >= entries.length || seen.has(id)) continue; seen.add(id); const e = entries[id]; out.push(e); stack.push(e.left, e.right); } return out; },
+      read(e) { if (e.type !== 2) return new Uint8Array(0); const raw = e.size < cutoff ? chain(e.start, miniFat, mss, (x) => x * mss, mini) : chain(e.start, fat, ss, off, b); return raw.subarray(0, e.size); },
+    };
+  }
+  function msgProps(f, storage, header) {
+    const streams = {}, fixed = {};
+    f.children(storage).forEach((c) => {
+      if (c.type !== 2) return;
+      if (c.name.startsWith("__substg1.0_")) streams[c.name.slice(12).toUpperCase()] = c;
+      if (c.name === "__properties_version1.0") { const raw = f.read(c); for (let p = header; p + 16 <= raw.length; p += 16) fixed[u16(raw, p + 2)] = { type: u16(raw, p), v: raw.subarray(p + 8, p + 16) }; }
+    });
+    const cpv = fixed[0x3fde] || fixed[0x3ffd]; const cp = cpv ? u32(cpv.v, 0) : null;
+    const hex = (id) => id.toString(16).toUpperCase().padStart(4, "0");
+    return {
+      has: (id) => Object.keys(streams).some((k) => k.startsWith(hex(id))) || !!fixed[id],
+      str(id) { const a = streams[hex(id) + "001F"]; if (a) return utf16(f.read(a)) || null; const c = streams[hex(id) + "001E"]; return c ? decode(f.read(c), cp) || null : null; },
+      bin(id) { const e = streams[hex(id) + "0102"]; return e ? f.read(e) : null; },
+      int(id) { const v = fixed[id]; return v && (v.type === 3 || v.type === 2) ? u32(v.v, 0) | 0 : null; },
+      cp,
+    };
+  }
+  function openMSG(b) {
+    const f = openCFB(b); if (!f) return null;
+    const pr = msgProps(f, f.root, 32);
+    if (!(pr.has(0x0037) || pr.has(0x1000) || pr.has(0x0c1a))) return null;
+    const m = { subject: pr.str(0x0037), from: null, to: null, text: pr.str(0x1000), html: null, attachments: [], format: "Outlook .msg" };
+    const name = pr.str(0x0c1a) || pr.str(0x0042) || "", addr = pr.str(0x5d01) || ((pr.str(0x0c1f) || "").includes("@") ? pr.str(0x0c1f) : "");
+    m.from = [name, addr && addr !== name ? "<" + addr + ">" : ""].filter(Boolean).join(" ") || null;
+    const to = [];
+    f.children(f.root).filter((e) => e.type === 1 && e.name.startsWith("__recip_version1.0_")).forEach((st) => {
+      const r = msgProps(f, st, 8); const n = r.str(0x3001) || "", a = r.str(0x39fe) || ((r.str(0x3003) || "").includes("@") ? r.str(0x3003) : "");
+      if (r.int(0x0c15) !== 3 && r.int(0x0c15) !== 2) to.push(a && a !== n ? (n ? n + " <" + a + ">" : a) : n);
+    });
+    m.to = to.filter(Boolean).join(", ") || pr.str(0x0e04);
+    const h = pr.bin(0x1013); m.html = h ? decode(h, pr.cp) : pr.str(0x1013);
+    f.children(f.root).filter((e) => e.type === 1 && e.name.startsWith("__attach_version1.0_")).forEach((st) => {
+      const a = msgProps(f, st, 8); const data = a.bin(0x3701); if (!data) return;
+      m.attachments.push({ name: a.str(0x3707) || a.str(0x3704) || a.str(0x3001) || "attachment", data });
+    });
+    m.attachments.sort((x, y) => x.name.localeCompare(y.name, undefined, { numeric: true }));
+    return m;
   }
 
   // ---------- Rendering ----------
@@ -379,7 +453,7 @@
         const url = URL.createObjectURL(new Blob([content]));
         html += `<p><a download="${esc(name)}" href="${url}">${esc(T.inner)} (${esc(name)})</a></p>`;
       }
-      const mail = !signature && openTNEF(content);
+      const mail = !signature && (openTNEF(content) || openMSG(content));
       if (mail) {
         show(renderEmail(mail));
         document.querySelectorAll("[data-att]").forEach((a) => a.addEventListener("click", (ev) => {
