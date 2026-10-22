@@ -4,17 +4,20 @@
 //   const kit = LisibleKit.create({ lang: "fr" });
 //   const doc = kit.read(bytes, "facture.xml.p7m");   // Uint8Array | ArrayBuffer | string
 //   element.innerHTML = kit.html(doc);
+//   const pdf = await kit.readAsync(bytes, "facture.pdf");  // lit aussi les PDF Factur-X / ZUGFeRD
 //
 // ou simplement <lisible-viewer lang="fr"></lisible-viewer> (zone de dépôt + rendu, styles isolés).
 (function (root) {
   "use strict";
   const I18N = {
-    en: { invoice: "Invoice", credit: "Credit note", number: "Number", date: "Date", due: "Due", from: "From", to: "To", items: "Items", totals: "Totals", net: "Net", vat: "VAT", total: "Total", pay: "To pay", payment: "Payment", signed: "Digitally signed file", by: "Signed by", on: "on", notInvoice: "This XML is not an invoice format Lisible knows. Its content:", notRead: "This file could not be read. Is it a .p7m, .xml or Factur-X .pdf?", inner: "Download the document inside", pdfNote: "This PDF is shown below. Factur-X/ZUGFeRD data inside PDFs is read by the Lisible app.", withholding: "Withholding tax", paid: "Already paid", lines: "Items total", discount: "Discount", charge: "Charge", attachments: "Attachments", noAttachments: "No attachment in this file.", openHere: "open here" },
-    fr: { invoice: "Facture", credit: "Avoir", number: "Numéro", date: "Date", due: "Échéance", from: "Émetteur", to: "Destinataire", items: "Lignes", totals: "Totaux", net: "HT", vat: "TVA", total: "TTC", pay: "À payer", payment: "Paiement", signed: "Fichier signé numériquement", by: "Signé par", on: "le", notInvoice: "Ce XML n'est pas un format de facture connu de Lisible. Son contenu :", notRead: "Ce fichier n'a pas pu être lu. Est-ce un .p7m, un .xml ou un PDF Factur-X ?", inner: "Télécharger le document contenu", pdfNote: "Le PDF est affiché ci-dessous. Les données Factur-X d'un PDF sont lues par l'app Lisible.", withholding: "Retenue à la source", paid: "Déjà payé", lines: "Lignes", discount: "Remise", charge: "Frais", attachments: "Pièces jointes", noAttachments: "Aucune pièce jointe dans ce fichier.", openHere: "ouvrir ici" },
-    de: { invoice: "Rechnung", credit: "Gutschrift", number: "Nummer", date: "Datum", due: "Fällig", from: "Von", to: "An", items: "Positionen", totals: "Summen", net: "Netto", vat: "USt.", total: "Brutto", pay: "Zu zahlen", payment: "Zahlung", signed: "Digital signierte Datei", by: "Signiert von", on: "am", notInvoice: "Diese XML-Datei ist kein Rechnungsformat, das Lisible kennt. Inhalt:", notRead: "Diese Datei konnte nicht gelesen werden. Ist es eine .p7m-, .xml- oder ZUGFeRD-PDF-Datei?", inner: "Enthaltenes Dokument herunterladen", pdfNote: "Das PDF wird unten angezeigt. ZUGFeRD-Daten in PDFs liest die Lisible-App.", withholding: "Quellensteuer", paid: "Bereits bezahlt", lines: "Positionen", discount: "Rabatt", charge: "Zuschlag", attachments: "Anhänge", noAttachments: "Keine Anhänge in dieser Datei.", openHere: "hier öffnen" },
-    it: { invoice: "Fattura", credit: "Nota di credito", number: "Numero", date: "Data", due: "Scadenza", from: "Cedente", to: "Cessionario", items: "Righe", totals: "Totali", net: "Imponibile", vat: "IVA", total: "Totale", pay: "Da pagare", payment: "Pagamento", signed: "File firmato digitalmente", by: "Firmato da", on: "il", notInvoice: "Questo XML non è un formato di fattura noto a Lisible. Contenuto:", notRead: "Impossibile leggere questo file. È un .p7m, un .xml o un PDF?", inner: "Scarica il documento contenuto", pdfNote: "Il PDF è mostrato qui sotto.", withholding: "Ritenuta d'acconto", paid: "Già pagato", lines: "Righe", discount: "Sconto", charge: "Maggiorazione", attachments: "Allegati", noAttachments: "Nessun allegato in questo file.", openHere: "apri qui" },
+    en: { invoice: "Invoice", credit: "Credit note", number: "Number", date: "Date", due: "Due", from: "From", to: "To", items: "Items", totals: "Totals", net: "Net", vat: "VAT", total: "Total", pay: "To pay", payment: "Payment", signed: "Digitally signed file", by: "Signed by", on: "on", notInvoice: "This XML is not an invoice format Lisible knows. Its content:", notRead: "This file could not be read. Is it a .p7m, .xml or Factur-X .pdf?", inner: "Download the document inside", pdfNote: "This PDF holds no e-invoice data: it is shown below.", pdfInvoice: "E-invoice data read from the PDF (Factur-X / ZUGFeRD)", xmlDownload: "Download the XML", withholding: "Withholding tax", paid: "Already paid", lines: "Items total", discount: "Discount", charge: "Charge", attachments: "Attachments", noAttachments: "No attachment in this file.", openHere: "open here" },
+    fr: { invoice: "Facture", credit: "Avoir", number: "Numéro", date: "Date", due: "Échéance", from: "Émetteur", to: "Destinataire", items: "Lignes", totals: "Totaux", net: "HT", vat: "TVA", total: "TTC", pay: "À payer", payment: "Paiement", signed: "Fichier signé numériquement", by: "Signé par", on: "le", notInvoice: "Ce XML n'est pas un format de facture connu de Lisible. Son contenu :", notRead: "Ce fichier n'a pas pu être lu. Est-ce un .p7m, un .xml ou un PDF Factur-X ?", inner: "Télécharger le document contenu", pdfNote: "Ce PDF ne contient pas de données de facture électronique : il est affiché ci-dessous.", pdfInvoice: "Données de facture électronique lues dans le PDF (Factur-X / ZUGFeRD)", xmlDownload: "Télécharger le XML", withholding: "Retenue à la source", paid: "Déjà payé", lines: "Lignes", discount: "Remise", charge: "Frais", attachments: "Pièces jointes", noAttachments: "Aucune pièce jointe dans ce fichier.", openHere: "ouvrir ici" },
+    de: { invoice: "Rechnung", credit: "Gutschrift", number: "Nummer", date: "Datum", due: "Fällig", from: "Von", to: "An", items: "Positionen", totals: "Summen", net: "Netto", vat: "USt.", total: "Brutto", pay: "Zu zahlen", payment: "Zahlung", signed: "Digital signierte Datei", by: "Signiert von", on: "am", notInvoice: "Diese XML-Datei ist kein Rechnungsformat, das Lisible kennt. Inhalt:", notRead: "Diese Datei konnte nicht gelesen werden. Ist es eine .p7m-, .xml- oder ZUGFeRD-PDF-Datei?", inner: "Enthaltenes Dokument herunterladen", pdfNote: "Dieses PDF enthält keine E-Rechnungsdaten: Es wird unten angezeigt.", pdfInvoice: "E-Rechnungsdaten aus dem PDF gelesen (ZUGFeRD / Factur-X)", xmlDownload: "XML herunterladen", withholding: "Quellensteuer", paid: "Bereits bezahlt", lines: "Positionen", discount: "Rabatt", charge: "Zuschlag", attachments: "Anhänge", noAttachments: "Keine Anhänge in dieser Datei.", openHere: "hier öffnen" },
+    it: { invoice: "Fattura", credit: "Nota di credito", number: "Numero", date: "Data", due: "Scadenza", from: "Cedente", to: "Cessionario", items: "Righe", totals: "Totali", net: "Imponibile", vat: "IVA", total: "Totale", pay: "Da pagare", payment: "Pagamento", signed: "File firmato digitalmente", by: "Firmato da", on: "il", notInvoice: "Questo XML non è un formato di fattura noto a Lisible. Contenuto:", notRead: "Impossibile leggere questo file. È un .p7m, un .xml o un PDF?", inner: "Scarica il documento contenuto", pdfNote: "Questo PDF non contiene dati di fattura elettronica: è mostrato qui sotto.", pdfInvoice: "Dati di fattura elettronica letti dal PDF (Factur-X / ZUGFeRD)", xmlDownload: "Scarica l'XML", withholding: "Ritenuta d'acconto", paid: "Già pagato", lines: "Righe", discount: "Sconto", charge: "Maggiorazione", attachments: "Allegati", noAttachments: "Nessun allegato in questo file.", openHere: "apri qui" },
+    pl: { invoice: "Faktura", credit: "Faktura korygująca", number: "Numer", date: "Data wystawienia", due: "Termin płatności", from: "Sprzedawca", to: "Nabywca", items: "Pozycje", totals: "Podsumowanie", net: "Netto", vat: "VAT", total: "Brutto", pay: "Do zapłaty", payment: "Płatność", signed: "Plik podpisany cyfrowo", by: "Podpisał(a)", on: "dnia", notInvoice: "Ten plik XML nie jest znanym Lisible formatem faktury. Jego zawartość:", notRead: "Nie udało się odczytać pliku. Czy to plik .xml, .p7m lub PDF z fakturą?", inner: "Pobierz dokument z podpisu", pdfNote: "Ten PDF nie zawiera danych faktury elektronicznej: jest wyświetlony poniżej.", pdfInvoice: "Dane faktury elektronicznej odczytane z PDF (Factur-X / ZUGFeRD)", xmlDownload: "Pobierz XML", withholding: "Podatek u źródła", paid: "Już zapłacono", lines: "Suma pozycji", discount: "Rabat", charge: "Opłata", attachments: "Załączniki", noAttachments: "Brak załączników w tym pliku.", openHere: "otwórz tutaj" },
+    nl: { invoice: "Factuur", credit: "Creditnota", number: "Nummer", date: "Datum", due: "Vervaldatum", from: "Van", to: "Aan", items: "Regels", totals: "Totalen", net: "Excl. btw", vat: "Btw", total: "Incl. btw", pay: "Te betalen", payment: "Betaling", signed: "Digitaal ondertekend bestand", by: "Ondertekend door", on: "op", notInvoice: "Deze XML is geen factuurformaat dat Lisible kent. De inhoud:", notRead: "Dit bestand kon niet worden gelezen. Is het een .xml-, .p7m- of Factur-X-pdf-bestand?", inner: "Download het document in het bestand", pdfNote: "Deze pdf bevat geen e-factuurgegevens: hij wordt hieronder getoond.", pdfInvoice: "E-factuurgegevens gelezen uit de pdf (Factur-X / ZUGFeRD)", xmlDownload: "Download de XML", withholding: "Bronheffing", paid: "Al betaald", lines: "Totaal regels", discount: "Korting", charge: "Toeslag", attachments: "Bijlagen", noAttachments: "Geen bijlagen in dit bestand.", openHere: "hier openen" },
   };
-  const LOCALES = { en: "en-GB", fr: "fr-FR", de: "de-DE", it: "it-IT" };
+  const LOCALES = { en: "en-GB", fr: "fr-FR", de: "de-DE", it: "it-IT", pl: "pl-PL", nl: "nl-BE" };
 
   function create(options) {
     const L = String((options && options.lang) || "en").slice(0, 2).toLowerCase();
@@ -135,7 +138,9 @@
       const r = doc.documentElement;
       switch (r.localName) {
         case "CrossIndustryInvoice": case "CrossIndustryDocument": return cii(r);
-        case "Invoice": case "CreditNote": return ubl(r);
+        // Early ZUGFeRD files name their CII root <rsm:Invoice>; UBL is always in the OASIS namespace.
+        case "Invoice": return /oasis/.test(r.namespaceURI || "") ? ubl(r) : cii(r);
+        case "CreditNote": return ubl(r);
         case "FatturaElettronica": return fattura(r);
         case "Faktura": return ksef(r);
         default: return null;
@@ -479,6 +484,42 @@
       return result("unknown", { data: content });
     }
 
+    // Factur-X / ZUGFeRD : le XML de la facture est un fichier embarqué dans le PDF (souvent compressé).
+    async function inflate(bytes) {
+      const out = new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate")));
+      return new Uint8Array(await out.arrayBuffer());
+    }
+    async function pdfXML(bytes) {
+      const raw = new TextDecoder("latin1").decode(bytes), found = [];
+      const re = /(?<!end)stream\r?\n/g;
+      let m;
+      while ((m = re.exec(raw))) {
+        const dict = raw.slice(raw.lastIndexOf("obj", m.index), m.index);
+        if (!/\/EmbeddedFile|\/Subtype\s*\/(text|application)#2Fxml/.test(dict)) continue;
+        const start = m.index + m[0].length, len = dict.match(/\/Length\s+(\d+)\b(?!\s+\d+\s+R)/);
+        let end = len ? start + Number(len[1]) : raw.indexOf("endstream", start);
+        if (!len) while (end > start && (raw[end - 1] === "\n" || raw[end - 1] === "\r")) end--;
+        let data = bytes.subarray(start, end);
+        try { if (/\/FlateDecode/.test(dict)) data = await inflate(data); } catch (e) { continue; }
+        const text = new TextDecoder().decode(data).replace(/^\uFEFF/, "");
+        if (text.trim().startsWith("<")) found.push(text);
+      }
+      return found;
+    }
+
+    // Comme read(), et lit en plus la facture cachée dans un PDF Factur-X / ZUGFeRD :
+    //   kind "invoice" avec data (le PDF) et xml (le XML extrait).
+    async function readAsync(input, filename) {
+      const r = read(input, filename);
+      if (r.kind !== "pdf" || typeof DecompressionStream === "undefined" || !Parser) return r;
+      for (const xml of await pdfXML(r.data)) {
+        const doc = new Parser().parseFromString(xml, "application/xml");
+        const inv = !doc.getElementsByTagName("parsererror").length && parseInvoice(doc);
+        if (inv && (inv.number || inv.gross != null || inv.seller.name || inv.lines.length)) return Object.assign(r, { kind: "invoice", invoice: inv, xml });
+      }
+      return r;
+    }
+
     // HTML prêt à insérer (classes lv-*, voir lisible-kit.css). Les pièces jointes ouvrables portent data-att="<index>".
     function html(r) {
       let out = "";
@@ -488,7 +529,12 @@
         if (typeof URL !== "undefined" && URL.createObjectURL) out += `<p><a download="${esc(s.name)}" href="${URL.createObjectURL(new Blob([s.data]))}">${esc(T.inner)} (${esc(s.name)})</a></p>`;
       }
       switch (r.kind) {
-        case "invoice": return out + render(r.invoice);
+        case "invoice":
+          if (r.data && typeof URL !== "undefined" && URL.createObjectURL) {
+            const xmlUrl = URL.createObjectURL(new Blob([r.xml], { type: "application/xml" }));
+            return out + `<p class="lv-small">${esc(T.pdfInvoice)} · <a download="${esc(r.name.replace(/\.pdf$/i, "") + ".xml")}" href="${xmlUrl}">${esc(T.xmlDownload)}</a></p>` + render(r.invoice) + `<iframe class="lv-pdf" src="${URL.createObjectURL(new Blob([r.data], { type: "application/pdf" }))}"></iframe>`;
+          }
+          return out + render(r.invoice);
         case "email": return out + renderEmail(r.email);
         case "pdf": return out + `<p>${esc(T.pdfNote)}</p><iframe class="lv-pdf" src="${URL.createObjectURL(new Blob([r.data], { type: "application/pdf" }))}"></iframe>`;
         case "xml": return out + `<p>${esc(T.notInvoice)}</p><pre class="lv-xml">${esc(r.text.slice(0, 20000))}</pre>`;
@@ -496,7 +542,7 @@
       }
     }
 
-    return { read, html, lang: L };
+    return { read, readAsync, html, lang: L };
   }
 
   // <lisible-viewer lang="fr" theme="light|dark|auto"></lisible-viewer> : zone de dépôt + rendu.
@@ -523,7 +569,7 @@
 @media (max-width:520px){.lv-parties{grid-template-columns:1fr}.lv-pay strong{font-size:22px}}
 `;
   if (root.customElements && root.HTMLElement && !root.customElements.get("lisible-viewer")) {
-    const DROP = { en: ["Drop an invoice, a .p7m or an Outlook file", "or choose a file"], fr: ["Déposez une facture, un .p7m ou un e-mail Outlook", "ou choisissez un fichier"], de: ["Rechnung, .p7m oder Outlook-Datei hier ablegen", "oder Datei auswählen"], it: ["Trascina qui una fattura, un .p7m o un file Outlook", "oppure scegli un file"] };
+    const DROP = { en: ["Drop an invoice, a .p7m or an Outlook file", "or choose a file"], fr: ["Déposez une facture, un .p7m ou un e-mail Outlook", "ou choisissez un fichier"], de: ["Rechnung, .p7m oder Outlook-Datei hier ablegen", "oder Datei auswählen"], it: ["Trascina qui una fattura, un .p7m o un file Outlook", "oppure scegli un file"], pl: ["Upuść fakturę, plik .p7m lub plik Outlooka", "lub wybierz plik"], nl: ["Zet hier een factuur, een .p7m of een Outlook-bestand neer", "of kies een bestand"] };
     root.customElements.define("lisible-viewer", class extends root.HTMLElement {
       connectedCallback() {
         if (this.shadowRoot) return;
@@ -540,10 +586,10 @@
           drop.addEventListener("drop", (ev) => { ev.preventDefault(); const f = ev.dataTransfer.files[0]; if (f) this.openFile(f); });
         }
       }
-      async openFile(file) { this.open(new Uint8Array(await file.arrayBuffer()), file.name); }
-      open(bytes, name) {
+      async openFile(file) { return this.open(new Uint8Array(await file.arrayBuffer()), file.name); }
+      async open(bytes, name) {
         if (!this.shadowRoot) this.connectedCallback();
-        const r = this.kit.read(bytes, name), out = this.shadowRoot.querySelector(".lv-result");
+        const r = await this.kit.readAsync(bytes, name), out = this.shadowRoot.querySelector(".lv-result");
         out.innerHTML = this.kit.html(r);
         out.querySelectorAll("[data-att]").forEach((a) => a.addEventListener("click", (ev) => {
           ev.preventDefault(); const att = r.email.attachments[Number(a.getAttribute("data-att"))]; this.open(att.data, att.name);
@@ -554,7 +600,7 @@
     });
   }
 
-  const api = { create, version: "1.0.0" };
+  const api = { create, version: "1.1.0" };
   if (typeof module === "object" && module.exports) module.exports = api;
   root.LisibleKit = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);
