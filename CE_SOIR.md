@@ -29,7 +29,7 @@ Sans ça on ne sait pas combien de gens arrivent sur les lecteurs (aucune mesure
 2. Méthode **Balise HTML** : copier la valeur `content="…"` et me la donner.
    Je l'ajoute à la page d'accueil, puis tu cliques **Valider**.
 3. Une fois validé : **Sitemaps** → ajouter `sitemap.xml`.
-4. Même chose pour `https://komorebideuxiemedunom.github.io/creux-app/` (vérification gratuite des heures creuses, renvoie vers Creux), pour `https://komorebideuxiemedunom.github.io/nounette-app/` (nouveau simulateur de salaire, qui renvoie vers Nounette, déjà en vente) et, si tu veux, `https://komorebideuxiemedunom.github.io/hop-app/`.
+4. Même chose pour `https://komorebideuxiemedunom.github.io/hourglass-app/` (calculateurs heures de conduite / conduite accompagnée), pour `https://komorebideuxiemedunom.github.io/creux-app/` (vérification gratuite des heures creuses, renvoie vers Creux), pour `https://komorebideuxiemedunom.github.io/nounette-app/` (nouveau simulateur de salaire, qui renvoie vers Nounette, déjà en vente) et, si tu veux, `https://komorebideuxiemedunom.github.io/hop-app/`.
 
 ## Ce qui est déjà fait
 
@@ -43,3 +43,4 @@ Sans ça on ne sait pas combien de gens arrivent sur les lecteurs (aucune mesure
 - 22/10 après-midi : les lecteurs en ligne lisent maintenant les PDF Factur-X / ZUGFeRD (le XML caché dedans), nouvelles pages « Lire une facture Factur-X » (FR), KSeF (polonais) et Peppol (néerlandais/Belgique). Protection des données renforcée : règle de sécurité (CSP) qui interdit toute connexion sauf la vérification de licence, aucune info sur l'appareil envoyée, page de confidentialité réécrite (FR/EN, durées de conservation, RGPD). Les boutons « Télécharger Lisible » (app pas encore publiée) sont remplacés par « Bientôt sur l'App Store ».
 - 22/10 : simulateur gratuit « Calcul du salaire d'une assistante maternelle » sur le site de Nounette (déjà en vente), avec un lien vers l'App Store : il peut rapporter dès maintenant, sans attendre Lemon Squeezy.
 - 22/10 : vérification gratuite « Mes heures creuses vont-elles changer ? » sur le site de Creux (en vente), et le site d'assistance de Creux ne cite plus aucune marque (cause du refus d'octobre).
+- 22/10 : calculateurs gratuits sur le site d'Hourglass (en vente) : heures de conduite par État américain (anglais) et km par semaine en conduite accompagnée (français).
