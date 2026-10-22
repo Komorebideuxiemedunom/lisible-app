@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lisible Kit · e-invoice and .p7m reader for your software</title>
+<meta name="description" content="Show XRechnung, ZUGFeRD, Factur-X, Peppol UBL, FatturaPA, KSeF invoices, signed .p7m files and Outlook e-mails as a readable document, inside your own web or iOS/macOS app. Runs on the device, no server, no dependency.">
+<style>
+:root{--ink:#17181C;--muted:#5F5E5A;--bg:#F4F1EA;--card:#FFFDF7;--accent:#9C2F45;--line:rgba(23,24,28,.12)}
+@media (prefers-color-scheme:dark){:root{--ink:#ECEADF;--muted:#B9B5A8;--bg:#0A0A0C;--card:#17181C;--accent:#E8787D;--line:rgba(236,234,223,.14)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:0 16px 64px}a{color:var(--accent)}
+header{padding:56px 0 24px}h1{font-size:clamp(30px,6vw,52px);line-height:1.08;margin:0 0 14px;letter-spacing:-.01em}
+.lead{font-size:20px;color:var(--muted);max-width:720px;margin:0}
+.label{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:48px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}.card h3{margin:0 0 6px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:15px}
+.price{font-size:34px;font-weight:700;margin:6px 0}.price small{font-size:15px;font-weight:400;color:var(--muted)}
+.card ul{padding-left:18px;margin:10px 0 16px;font-size:15px}.btn{display:inline-block;background:var(--accent);color:#fff;border-radius:12px;padding:12px 18px;text-decoration:none;font-weight:600}
+@media (prefers-color-scheme:dark){.btn{color:#0A0A0C}}
+pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;font-size:14px}
+.samples{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.samples button{font:inherit;font-size:14px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+footer{border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Readable e-invoices inside your own software.</h1>
+  <p class="lead">Lisible Kit turns XRechnung, ZUGFeRD, Factur-X, Peppol UBL, FatturaPA and KSeF files, signed .p7m envelopes and Outlook winmail.dat or .msg e-mails into a clean document your users can read. It runs in the browser or in your iOS and macOS app. Nothing leaves the device.</p>
+</header>
+
+<p class="label">Try it</p>
+<div class="samples">
+  <button data-sample="../samples/xrechnung.xml">XRechnung (CII)</button>
+  <button data-sample="../samples/peppol.xml">Peppol UBL</button>
+  <button data-sample="../samples/fattura.xml.p7m">FatturaPA, signed .p7m</button>
+  <button data-sample="../samples/ksef.xml">KSeF (Poland)</button>
+</div>
+<lisible-viewer lang="en"></lisible-viewer>
+
+<p class="label">What you get</p>
+<div class="grid">
+  <div class="card"><h3>JavaScript widget</h3><p>One 45 KB file, no dependency. Drop in <code>&lt;lisible-viewer&gt;</code>, or call <code>read()</code> and get structured data back.</p></div>
+  <div class="card"><h3>Swift package</h3><p>The engine of the Lisible app for iOS 16+ and macOS 13+. <code>DocumentLoader.load(data, name:)</code> returns the invoice, the e-mail or the signature.</p></div>
+  <div class="card"><h3>Formats of six countries</h3><p>Germany, France, Italy, Belgium, Poland, Peppol everywhere. Credit notes, discounts and charges, withholding tax, prepaid amounts.</p></div>
+  <div class="card"><h3>Private by design</h3><p>No server, no upload, no tracking. Invoices carry bank details: they stay with your user.</p></div>
+</div>
+
+<p class="label">Two lines</p>
+<pre><code>&lt;script src="lisible-kit.js"&gt;&lt;/script&gt;
+&lt;lisible-viewer lang="de"&gt;&lt;/lisible-viewer&gt;</code></pre>
+<pre><code>const kit = LisibleKit.create({ lang: "fr" });
+const doc = kit.read(bytes, "fattura.xml.p7m");
+doc.invoice.gross;            // 366
+doc.signature.signers;        // names from the certificates
+element.innerHTML = kit.html(doc);</code></pre>
+
+<p class="label">Licence</p>
+<div class="grid">
+  <div class="card"><h3>Team</h3><div class="price">290 € <small>/ year</small></div><ul><li>One company, internal tools</li><li>JS widget and Swift package</li><li>Updates for new format versions</li></ul><a class="btn" href="mailto:inceept@gmail.com?subject=Lisible%20Kit%20Team" data-checkout="team">Buy</a></div>
+  <div class="card"><h3>Product</h3><div class="price">990 € <small>/ year</small></div><ul><li>Inside one product you sell or host for your customers</li><li>Unlimited end users</li><li>E-mail support, answer within 2 working days</li></ul><a class="btn" href="mailto:inceept@gmail.com?subject=Lisible%20Kit%20Product" data-checkout="product">Buy</a></div>
+  <div class="card"><h3>Source</h3><div class="price">On request</div><ul><li>Several products or white label</li><li>Custom formats</li></ul><a class="btn" href="mailto:inceept@gmail.com?subject=Lisible%20Kit">Write to us</a></div>
+</div>
+<p class="lead" style="font-size:15px;margin-top:12px">Prices excluding VAT. Payment and invoicing by Lemon Squeezy (merchant of record). Cancel any time: the version you have keeps working.</p>
+
+<footer><p>Lisible Kit by Lucas Dansac, maker of the Lisible app for iPhone and Mac. Questions: <a href="mailto:inceept@gmail.com">inceept@gmail.com</a></p></footer>
+</main>
+<script src="lisible-kit.js"></script>
+<script>
+document.querySelectorAll("[data-sample]").forEach((b) => b.addEventListener("click", async () => {
+  const res = await fetch(b.dataset.sample);
+  document.querySelector("lisible-viewer").open(new Uint8Array(await res.arrayBuffer()), b.dataset.sample.split("/").pop());
+}));
+</script>
+</body>
+</html>

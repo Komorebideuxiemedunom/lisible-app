@@ -437,58 +437,74 @@
 
   function show(html) { const out = document.getElementById("lv-result"); out.innerHTML = html; out.scrollIntoView({ behavior: "smooth", block: "start" }); }
 
-  function handle(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const bytes = new Uint8Array(reader.result);
-      let content = bytes, signature = null, name = file.name;
-      for (let k = 0; k < 3; k++) { // .p7m.p7m
-        const env = openP7M(content);
-        if (!env) break;
-        signature = signature || env; content = env.content; name = name.replace(/\.p7[ms]$/i, "");
+  /// What a file holds, without drawing anything: signature envelope, e-mail, PDF, invoice or plain XML.
+  function analyze(bytes, fileName) {
+    let content = bytes, signature = null, name = fileName;
+    for (let k = 0; k < 3; k++) { // .p7m.p7m
+      const env = openP7M(content);
+      if (!env) break;
+      signature = signature || env; content = env.content; name = name.replace(/\.p7[ms]$/i, "");
+    }
+    const r = { file: fileName, name, content, signature };
+    const mail = !signature && (openTNEF(content) || openMSG(content));
+    if (mail) return Object.assign(r, { kind: "mail", mail });
+    const head = new TextDecoder().decode(content.subarray(0, 1024));
+    if (head.includes("%PDF")) return Object.assign(r, { kind: "pdf" });
+    const xmlText = new TextDecoder().decode(content).replace(/^﻿/, "");
+    if (xmlText.trim().startsWith("<")) {
+      const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+      if (!doc.querySelector("parsererror")) {
+        const inv = parseInvoice(doc);
+        if (inv && (inv.number || inv.gross != null || inv.seller.name || inv.lines.length)) return Object.assign(r, { kind: "invoice", invoice: inv });
+        return Object.assign(r, { kind: "xml", xmlText });
       }
-      let html = "";
-      if (signature) {
-        html += `<div class="lv-signed"><strong>${esc(T.signed)}</strong>${signature.signers.length ? `<div>${esc(T.by)} ${esc(signature.signers.join(", "))}${signature.time ? " " + esc(T.on) + " " + signature.time.toLocaleString(LOCALE) : ""}</div>` : ""}</div>`;
-        const url = URL.createObjectURL(new Blob([content]));
-        html += `<p><a download="${esc(name)}" href="${url}">${esc(T.inner)} (${esc(name)})</a></p>`;
-      }
-      const mail = !signature && (openTNEF(content) || openMSG(content));
-      if (mail) {
-        show(renderEmail(mail));
-        document.querySelectorAll("[data-att]").forEach((a) => a.addEventListener("click", (ev) => {
-          ev.preventDefault(); const att = mail.attachments[Number(a.getAttribute("data-att"))];
-          handle(new File([att.data], att.name));
-        }));
-        return;
-      }
-      const head = new TextDecoder().decode(content.subarray(0, 1024));
-      if (head.includes("%PDF")) {
-        const url = URL.createObjectURL(new Blob([content], { type: "application/pdf" }));
-        show(html + `<p>${esc(T.pdfNote)}</p><iframe class="lv-pdf" src="${url}"></iframe>`);
-        return;
-      }
-      const xmlText = new TextDecoder().decode(content).replace(/^﻿/, "");
-      if (xmlText.trim().startsWith("<")) {
-        const doc = new DOMParser().parseFromString(xmlText, "application/xml");
-        if (!doc.querySelector("parsererror")) {
-          const inv = parseInvoice(doc);
-          if (inv && (inv.number || inv.gross != null || inv.seller.name || inv.lines.length)) { show(html + render(inv)); return; }
-          show(html + `<p>${esc(T.notInvoice)}</p><pre class="lv-xml">${esc(xmlText.slice(0, 20000))}</pre>`);
-          return;
-        }
-      }
-      show(html || `<p class="lv-error">${esc(T.notRead)}</p>`);
-    };
-    reader.readAsArrayBuffer(file);
+    }
+    return Object.assign(r, { kind: signature ? "signed" : "unknown" });
   }
+
+  function display(r) {
+    let html = "";
+    if (r.signature) {
+      const s = r.signature;
+      html += `<div class="lv-signed"><strong>${esc(T.signed)}</strong>${s.signers.length ? `<div>${esc(T.by)} ${esc(s.signers.join(", "))}${s.time ? " " + esc(T.on) + " " + s.time.toLocaleString(LOCALE) : ""}</div>` : ""}</div>`;
+      const url = URL.createObjectURL(new Blob([r.content]));
+      html += `<p><a download="${esc(r.name)}" href="${url}">${esc(T.inner)} (${esc(r.name)})</a></p>`;
+    }
+    if (r.kind === "mail") {
+      show(renderEmail(r.mail));
+      document.querySelectorAll("[data-att]").forEach((a) => a.addEventListener("click", (ev) => {
+        ev.preventDefault(); const att = r.mail.attachments[Number(a.getAttribute("data-att"))];
+        handle(new File([att.data], att.name));
+      }));
+      return;
+    }
+    if (r.kind === "pdf") {
+      const url = URL.createObjectURL(new Blob([r.content], { type: "application/pdf" }));
+      show(html + `<p>${esc(T.pdfNote)}</p><iframe class="lv-pdf" src="${url}"></iframe>`);
+      return;
+    }
+    if (r.kind === "invoice") return show(html + render(r.invoice));
+    if (r.kind === "xml") return show(html + `<p>${esc(T.notInvoice)}</p><pre class="lv-xml">${esc(r.xmlText.slice(0, 20000))}</pre>`);
+    show(html || `<p class="lv-error">${esc(T.notRead)}</p>`);
+  }
+
+  function handle(file) {
+    file.arrayBuffer().then((buf) => display(analyze(new Uint8Array(buf), file.name)));
+  }
+
+  // Lisible Pro (pro.js) reads several files at once with the same engine.
+  window.Lisible = { analyze, display, handle, esc, money, day, L, LOCALE };
 
   document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("lv-file"), drop = document.getElementById("lv-drop");
-    input.addEventListener("change", () => input.files[0] && handle(input.files[0]));
+    const take = (files) => {
+      if (files.length > 1 && window.LisibleBatch) window.LisibleBatch(files);
+      else if (files[0]) handle(files[0]);
+    };
+    input.addEventListener("change", () => take([...input.files]));
     ["dragover", "dragenter"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.add("lv-over"); }));
     ["dragleave", "drop"].forEach((e) => drop.addEventListener(e, () => drop.classList.remove("lv-over")));
-    drop.addEventListener("drop", (ev) => { ev.preventDefault(); const f = ev.dataTransfer.files[0]; if (f) handle(f); });
+    drop.addEventListener("drop", (ev) => { ev.preventDefault(); take([...ev.dataTransfer.files]); });
     document.querySelectorAll("[data-sample]").forEach((a) => a.addEventListener("click", async (ev) => {
       ev.preventDefault();
       const res = await fetch(a.getAttribute("data-sample"));

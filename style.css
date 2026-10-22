@@ -22,3 +22,15 @@ footer{margin-top:40px;font-size:14px;color:var(--muted)}.lv-drop{display:block;
 nav.lang{font-size:14px;margin-bottom:8px}
 @media (max-width:520px){.lv-parties{grid-template-columns:1fr}.lv-pay strong{font-size:24px}}
 .lv-body{margin-top:14px;padding-top:12px;border-top:1px solid rgba(127,127,127,.2);color:var(--ink);font-size:15px}
+.lv-pro{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:20px 22px;margin:28px 0}
+.lv-pro h2{margin-top:0}.lv-pro ul{padding-left:20px}.lv-pro li{color:var(--ink)}
+.lv-pro .btn,.lv-batch-head .btn{display:inline-block;background:var(--accent);color:#fff;font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;text-decoration:none;cursor:pointer}
+.lv-batch-head .btn{font-size:14px;padding:7px 12px}
+.lv-price strong{font-size:24px;color:var(--ink)}.lv-pro details{margin-top:14px}.lv-pro summary{cursor:pointer;color:var(--accent)}
+.lv-key{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:10px}.lv-key label{flex:1;min-width:220px;font-size:14px;color:var(--muted)}
+.lv-key input{display:block;width:100%;font:inherit;padding:9px 10px;border-radius:10px;border:1px solid rgba(127,127,127,.4);background:var(--bg);color:var(--ink)}
+#lv-batch{margin-top:24px}.lv-batch-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.lv-table{overflow-x:auto;background:var(--card);border-radius:16px;padding:8px 12px}.lv-table table{width:100%;border-collapse:collapse;font-size:14px}
+.lv-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:6px 8px 6px 0}
+.lv-table td{padding:7px 8px 7px 0;border-top:1px solid rgba(127,127,127,.2);color:var(--ink);vertical-align:top}.lv-table td:last-child{text-align:right;white-space:nowrap}
+.lv-upsell{background:rgba(15,118,110,.1);border-radius:14px;padding:12px 14px;color:var(--ink)}
