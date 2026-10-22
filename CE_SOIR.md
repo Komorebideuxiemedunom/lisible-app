@@ -1,7 +1,7 @@
 # Ce soir : ouvrir la caisse (22 octobre 2026)
 
-Tout le code est prêt et en ligne. Il manque deux choses qui demandent ton compte, sur ton PC.
-Compter 30 à 40 minutes.
+Tout le code est prêt et en ligne. Il reste trois choses qui demandent tes comptes.
+Compter 45 minutes.
 
 ## 1. Lemon Squeezy : un compte, trois produits
 
@@ -30,6 +30,43 @@ Sans ça on ne sait pas combien de gens arrivent sur les lecteurs (aucune mesure
    Je l'ajoute à la page d'accueil, puis tu cliques **Valider**.
 3. Une fois validé : **Sitemaps** → ajouter `sitemap.xml`.
 4. Même chose, si tu veux, pour `https://komorebideuxiemedunom.github.io/hop-app/`.
+
+## 3. App Store : recentrer le compte (Mac ou PC, 10 min)
+
+Apple n'a toujours pas répondu (vérifié ce matin) et demande de ne rien renvoyer. Le garde-fou m'empêche
+d'annuler une soumission ou d'écrire dans App Store Connect, donc c'est pour toi.
+
+1. **Retirer Roomy et ProtoKomo de la vérification** (réversible, rien n'est supprimé, on pourra les resoumettre) :
+   l'app → **Vérification de l'app** → la soumission 1.0 → **Annuler la soumission** → confirmer.
+   - Roomy : https://appstoreconnect.apple.com/apps/6820056112/distribution/reviewsubmissions/details/94119a15-ef5e-4e5b-ae3d-905109815a36
+   - ProtoKomo : https://appstoreconnect.apple.com/apps/6821920010/distribution/reviewsubmissions/details/a819bffe-a737-4723-8e59-e758107b9eb7
+   - Surtout pas « Supprimer l'app » : ça brûle le nom et l'identifiant pour toujours.
+2. **Ensuite seulement**, envoyer le même message dans les fils de YET, Hop et Lisible
+   (**Répondre à l'équipe de vérification des apps**, coller, **Répondre**) :
+   - YET : https://appstoreconnect.apple.com/apps/6817475008/distribution/reviewsubmissions/details/ecad7075-b0de-49b7-92b8-9c8a7226627f
+   - Hop : https://appstoreconnect.apple.com/apps/6818609255/distribution/reviewsubmissions/details/3cd4c296-40e3-4642-b0a1-721de598f1b1
+   - Lisible : https://appstoreconnect.apple.com/apps/6818609797/distribution/reviewsubmissions/details/c29ef71b-a8ef-4057-af9d-f5ab28345b6c
+
+```
+Hello,
+
+A short update on your fifth question, about apps published under the same account.
+
+To keep our account focused on apps that are clearly distinct, we have withdrawn two submissions from review: Roomy (a photo storage cleaner) and ProtoKomo (a personal tool that will stay a private build).
+
+The apps we are asking you to review are now:
+- YET, a bucket list planner,
+- Hop, which sends files from an iPhone to Windows PCs and Android phones,
+- Lisible, a viewer for electronic invoices and signed .p7m files.
+
+They do not overlap in purpose or audience, and each one is a standalone product. Our apps already on the App Store (Creux, Gymbros, Nounette, Hourglass) are unchanged.
+
+Thank you for your time.
+
+Lucas Dansac
+```
+
+Ne rien soumettre d'autre (Lueur compris) tant qu'Apple n'a pas répondu à ces trois-là.
 
 ## Ce qui est déjà fait
 
