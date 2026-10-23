@@ -489,7 +489,7 @@
       const doc = new DOMParser().parseFromString(xmlText, "application/xml");
       if (!doc.querySelector("parsererror")) {
         const inv = parseInvoice(doc);
-        if (inv && (inv.number || inv.gross != null || inv.seller.name || inv.lines.length)) return Object.assign(r, { kind: "invoice", invoice: inv });
+        if (inv && (inv.number || inv.gross != null || inv.seller.name || inv.lines.length)) return Object.assign(r, { kind: "invoice", invoice: inv, xml: xmlText });
         return Object.assign(r, { kind: "xml", xmlText });
       }
     }
@@ -497,6 +497,8 @@
   }
 
   function display(r) {
+    // Page « vérifier une facture » (verif-facture.js) : contrôle des mentions sur le XML.
+    if (window.LisibleCheck) window.LisibleCheck(r);
     let html = "";
     if (r.signature) {
       const s = r.signature;

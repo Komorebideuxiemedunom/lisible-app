@@ -36,3 +36,7 @@ nav.lang{font-size:14px;margin-bottom:8px}
 .lv-upsell{background:rgba(15,118,110,.1);border-radius:14px;padding:12px 14px;color:var(--ink)}
 .lv-table td:first-child{overflow-wrap:anywhere;min-width:140px}.lv-table td:nth-child(3){white-space:nowrap}
 .lv-soon{font-size:14px;opacity:.9;margin:4px 0 0}
+.vf{width:100%;border-collapse:collapse;font-size:15px}.vf td{padding:7px 4px;border-top:1px solid rgba(127,127,127,.2);vertical-align:top}
+.vf td:first-child{width:24px;font-weight:700}.vf small{color:var(--muted);font-size:13px}
+.vf-ok td:first-child{color:#16A36F}.vf-no td:first-child{color:#B42318}.vf-info td:first-child{color:var(--muted)}
+.vf-titre{margin-top:4px}.vf-alerte{border-radius:12px;padding:10px 12px;background:rgba(232,150,40,.15)}
